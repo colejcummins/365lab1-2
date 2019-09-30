@@ -29,9 +29,9 @@ def main():
     read_file("teachers.txt", teachers, add_teachers)
     students = []
     read_file("list.txt", students, add_students, teachers)
-    prompt_loop(students)
+    prompt_loop(students, teachers)
 
-def prompt_loop(students):
+def prompt_loop(students, teachers):
     prompt = str('Please enter a query. Example queries:\nS[tudent]: <lastname>'
     '[B[us]]\nT[eacher]: <lastname>\nB[us]: <number>\nG[rade]: <number>'
     '[H[igh]|L[ow]]\nA[verage]: <number>\nI[nfo]\nQ[uit]\n\n')
