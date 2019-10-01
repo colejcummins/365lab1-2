@@ -72,7 +72,6 @@ def prompt_loop(students, teachers):
             elif split[2] == "High" or split[2] == "H":
                 high = Student(["", "", "", "", "", "0.0", "", ""])
                 find_max_min(students, grades, split, attr, high, lambda a, b: float(a) > float(b))
-
             elif split[2] == "Low" or split[2] == "L":
                 low = Student(["", "", "", "", "", "100.0", "", ""])
                 find_max_min(students, grades, split, attr, low, lambda a, b: float(a) < float(b))
