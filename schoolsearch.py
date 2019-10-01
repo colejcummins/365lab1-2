@@ -10,6 +10,8 @@ class Student:
         self.TLastName = args[6]
         self.TFirstName = args[7]
 
+# filename: string, arr: dict | list, func: function
+# reads through the given file, performing the given function for each line
 def read_file(filename, arr, func, **kwargs):
     with open(filename) as fp:
         line = fp.readline().strip()
@@ -107,12 +109,16 @@ def prompt_loop(students, teachers):
                 print(teachers[split[1]])
         print("")
 
+# students: list
+# Creates a dictionary of student enrollment by grade
 def students_by_grade(students):
     grades = [0 for _ in range(6)]
     for s in students:
         grades[int(s.Grade) - 1] += 1
     return grades
 
+# students: list, attr: string
+# For a given attribute, find the average GPA over all possible variations of that attribute
 def analytics(students, attr):
     dict = {}
     gpa = {}
@@ -123,7 +129,8 @@ def analytics(students, attr):
     for k in sorted(gpa.keys()):
         print(k, round(gpa[k]/dict[k], 2))
 
-
+# students: list, grades: list, split: list, attr: string, start: student, comp: lambda
+# Finds the student with either the maximum or minimum GPA for a given graph
 def find_max_min(students, grades, split, attr, start, comp):
     for s in students:
         if s.Grade == split[1] and comp(s.GPA, start.GPA):
@@ -131,6 +138,8 @@ def find_max_min(students, grades, split, attr, start, comp):
     if grades[int(split[1]) - 1] > 0:
         print(",".join(getattr(start, a) for a in attr))
 
+# split: list, word: string
+# Checks if the user input is valid
 def check(split, word, add="", exp_len=1):
     return (split[0] == word or split[0] == word[0] + add) and len(split) >= exp_len
 
