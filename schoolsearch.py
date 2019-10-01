@@ -10,31 +10,32 @@ class Student:
         self.TLastName = args[6]
         self.TFirstName = args[7]
 
-def read_file(filename, arr, func, *kwargs):
+def read_file(filename, arr, func, **kwargs):
     with open(filename) as fp:
         line = fp.readline().strip()
         while line:
             split = line.replace(" ", "").split(",")
-            func(arr, split, *kwargs)
+            func(arr, split, **kwargs)
             line = fp.readline().strip()
 
 def add_students(arr, split, teachers):
     arr.append(Student(split + teachers[split[3]].split(",")))
 
-def add_teachers(dict, split, *kwargs):
+def add_teachers(dict, split):
     dict[split[2]] = split[0] + "," + split[1]
 
 def main():
     teachers = {}
     read_file("teachers.txt", teachers, add_teachers)
     students = []
-    read_file("list.txt", students, add_students, teachers)
+    read_file("list.txt", students, add_students, teachers=teachers)
     prompt_loop(students, teachers)
 
 def prompt_loop(students, teachers):
-    prompt = str('Please enter a query. Example queries:\nS[tudent]: <lastname>'
-    '[B[us]]\nT[eacher]: <lastname>\nB[us]: <number>\nG[rade]: <number>'
-    '[H[igh]|L[ow]]\nA[verage]: <number>\nI[nfo]\nQ[uit]\n\n')
+    prompt = str('Please enter a query. Example queries:\nS[tudent]: <lastname> [B[us]]'
+    '\nT[eacher]: <lastname>\nB[us]: <number>\nC[lassroom]: <number> [T[eacher]]\nG[rade]: <number>'
+    ' [H[igh]|L[ow]|T[eacher]]\nA[verage]: <number>\nAnalytics: <G[rade]|T[eacher]|B[us]>'
+    '\nE[nrollment]\nI[nfo]\nQ[uit]\n\n')
 
     grades = students_by_grade(students)
 
@@ -47,6 +48,13 @@ def prompt_loop(students, teachers):
 
         elif check(split, "Quit"):
             break
+
+        elif check(split, "Enrollment"):
+            classrooms = {}
+            for s in students:
+                classrooms[s.Classroom] = classrooms.get(s.Classroom, 0) + 1
+            for k in sorted(classrooms.keys()):
+                print(k, classrooms[k])
 
         elif check(split, "Average:", ":", 2):
             sum_gpa = 0.0
@@ -66,6 +74,13 @@ def prompt_loop(students, teachers):
             elif split[2] == "Low" or split[2] == "L":
                 low = Student(["", "", "", "", "", "100.0", "", ""])
                 find_max_min(students, grades, split, attr, low, lambda a, b: float(a) < float(b))
+            elif split[2] == "Teacher" or split[2] == "T":
+                by_grade = {}
+                for s in students:
+                    if s.Grade == split[1] and s.TLastName + "," + s.TFirstName not in by_grade:
+                        by_grade[s.TLastName + "," + s.TFirstName] = s.Grade
+                for k in sorted(by_grade.keys()):
+                    print(k)
 
         elif check(split, "Teacher:", ":", 2):
             seq_search("TLastName", split[1], ["StLastName", "StFirstName"], students)
@@ -80,6 +95,16 @@ def prompt_loop(students, teachers):
                 attrs = ["StLastName", "StFirstName", "Grade", "Classroom", "TLastName", "TFirstName"]
                 seq_search("StLastName", split[1], attrs, students)
 
+        elif check(split, "Analytics:", exp_len=2):
+            if split[1] in ["G", "Grade", "T", "Teacher", "B", "Bus"]:
+                match_inp = {"G":"Grade", "T":"TLastName", "Teacher":"TLastName", "B":"Bus"}
+                analytics(students, match_inp.get(split[1], split[1]))
+
+        elif check(split, "Classroom:", ":", 2):
+            if len(split) == 2:
+                seq_search("Classroom", split[1], ["StLastName", "StFirstName"], students)
+            elif split[2] == "Teacher" or split[2] == "T":
+                print(teachers[split[1]])
         print("")
 
 def students_by_grade(students):
@@ -87,6 +112,17 @@ def students_by_grade(students):
     for s in students:
         grades[int(s.Grade) - 1] += 1
     return grades
+
+def analytics(students, attr):
+    dict = {}
+    gpa = {}
+    for s in students:
+        k = getattr(s, attr)
+        dict[k] = dict.get(k, 0) + 1
+        gpa[k] = gpa.get(k, 0.0) + float(s.GPA)
+    for k in sorted(gpa.keys()):
+        print(k, round(gpa[k]/dict[k], 2))
+
 
 def find_max_min(students, grades, split, attr, start, comp):
     for s in students:
