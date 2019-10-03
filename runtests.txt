@@ -1,0 +1,25 @@
+S: HAVIR
+S: NEMO
+Student: SCHOENECKER
+Student: WOOLERY Bus
+T: HAMER
+Teacher: BOB
+G: 3
+Grade: 12
+B: 51
+Bus: 100
+Grade: 6 High
+G: 3 L
+A: 2
+Average: 100
+Info
+Great command
+C: 104
+C: 111 T
+G: 3 T
+E
+Enrollment
+Analytics: G
+Analytics: T
+Analytics: B
+Q

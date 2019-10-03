@@ -1,3 +1,6 @@
+# 365lab1-2
+# Cole Cummins, Jasmine Patel
+
 # A class representing a student
 class Student:
     def __init__(self, args):
@@ -62,7 +65,7 @@ def prompt_loop(students, teachers):
             sum_gpa = 0.0
             for s in students:
                 sum_gpa += float(s.GPA) if s.Grade == split[1] else 0
-            if grades[int(split[1]) - 1] > 0:
+            if len(grades) >= int(split[1]) and grades[int(split[1]) - 1] > 0:
                 print(split[1], round(sum_gpa/grades[int(split[1]) - 1], 2))
 
         elif check(split, "Grade:", ":", 2):
